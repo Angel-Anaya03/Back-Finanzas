@@ -1,0 +1,17 @@
+{
+  "idUsuario": 1,
+  "nombreBono": "Bono Ejemplo",
+  "valorNominal": 5000.00,
+  "valorComercial": 4950.00,
+  "tasaCupon": 8.5,
+  "tiempoTasa": "Anual",
+  "frecuenciaPago": "semestral",
+  "plazo": 5,
+  "porcentajeTasa": 7.5,
+  "primaRedencion": 2.0,
+  "estructuracion": 1.5,
+  "colocacion": 1.0,
+  "cavali": 0.5,
+  "tipoGracia": "Total",
+  "periodoGracia": 3
+}

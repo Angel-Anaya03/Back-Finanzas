@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla de Amortización</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .datos-container {
+            background-color: #f0e6d2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #ccc;
+        }
+
+        .datos-title {
+            background-color: #d4c5a0;
+            padding: 5px 10px;
+            margin: -15px -15px 10px -15px;
+            font-weight: bold;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .datos-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #ccc;
+            padding: 3px 0;
+        }
+
+        .datos-label {
+            background-color: #f0e6d2;
+            padding: 3px 8px;
+            font-weight: bold;
+            min-width: 150px;
+        }
+
+        .datos-value {
+            background-color: #e6dcc6;
+            padding: 3px 8px;
+            text-align: right;
+        }
+
+        .tabla-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #666;
+            font-size: 12px;
+        }
+
+        th {
+            background-color: #d4c5a0;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #666;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 6px 8px;
+            text-align: center;
+            border: 1px solid #666;
+        }
+
+        .periodo-normal {
+            background-color: #f0e6d2;
+        }
+
+        .periodo-especial {
+            background-color: #fff2cc;
+        }
+
+        .numero-rojo {
+            color: red;
+        }
+
+        .numero-negro {
+            color: black;
+        }
+
+        .input-section {
+            background-color: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+        }
+
+        .input-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .input-group input, .input-group select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .btn-calcular {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-calcular:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Amortización</h1>
+        
+        <div class="input-section">
+            <h3>Ingrese los datos del préstamo:</h3>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="precioVenta">Precio de Venta:</label>
+                    <input type="number" id="precioVenta" value="1800000" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="cuotaInicial">% Cuota Inicial:</label>
+                    <input type="number" id="cuotaInicial" value="20" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label for="frecuencia">Frecuencia:</label>
+                    <select id="frecuencia">
+                        <option value="semestral">Semestral</option>
+                        <option value="mensual">Mensual</option>
+                        <option value="trimestral">Trimestral</option>
+                        <option value="anual">Anual</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="numAnios">Número de Años:</label>
+                    <input type="number" id="numAnios" value="4" min="1">
+                </div>
+            </div>
+            <button class="btn-calcular" onclick="calcularAmortizacion()">Calcular Amortización</button>
+        </div>
+
+        <div id="resultados" style="display: none;">
+            <div class="datos-container">
+                <div class="datos-title">DATOS</div>
+                <div class="datos-row">
+                    <div class="datos-label">Precio de Venta</div>
+                    <div class="datos-value" id="precio-display"></div>
+                </div>
+                <div class="datos-row">
+                    <div class="datos-label">% Cuota Inicial</div>
+                    <div class="datos-value" id="cuota-display"></div>
+                </div>
+                <div class="datos-row">
+                    <div class="datos-label">Préstamo</div>
+                    <div class="datos-value" id="prestamo-display"></div>
+                </div>
+                <div class="datos-row">
+                    <div class="datos-label">Frecuencia</div>
+                    <div class="datos-value" id="frecuencia-display"></div>
+                </div>
+                <div class="datos-row">
+                    <div class="datos-label">N° de Años</div>
+                    <div class="datos-value" id="anios-display"></div>
+                </div>
+                <div class="datos-row">
+                    <div class="datos-label">N° Períodos</div>
+                    <div class="datos-value" id="periodos-display"></div>
+                </div>
+            </div>
+
+            <div class="tabla-container">
+                <table id="tablaAmortizacion">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>TEA</th>
+                            <th>TES</th>
+                            <th>Plazo Gracia</th>
+                            <th>Saldo Inicial</th>
+                            <th>Interés</th>
+                            <th>Cuota</th>
+                            <th>Amort.</th>
+                            <th>Saldo Final</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calcularAmortizacion() {
+            // Obtener valores de entrada
+            const precioVenta = parseFloat(document.getElementById('precioVenta').value);
+            const porcentajeCuotaInicial = parseFloat(document.getElementById('cuotaInicial').value);
+            const frecuencia = document.getElementById('frecuencia').value;
+            const numAnios = parseInt(document.getElementById('numAnios').value);
+
+            // Calcular valores básicos
+            const cuotaInicial = precioVenta * (porcentajeCuotaInicial / 100);
+            const prestamo = precioVenta - cuotaInicial;
+            
+            // Determinar número de períodos por año según frecuencia
+            let periodosAnio;
+            switch(frecuencia) {
+                case 'mensual': periodosAnio = 12; break;
+                case 'trimestral': periodosAnio = 4; break;
+                case 'semestral': periodosAnio = 2; break;
+                case 'anual': periodosAnio = 1; break;
+                default: periodosAnio = 2;
+            }
+            
+            const numPeriodos = numAnios * periodosAnio;
+
+            // Tasas de interés (simulando las de la imagen)
+            const TEA_1_4 = 0.09; // 9% para períodos 1-4
+            const TEA_5_8 = 0.08; // 8% para períodos 5-8
+            
+            // Convertir TEA a TES (Tasa Efectiva Semestral)
+            const TES_1_4 = Math.pow(1 + TEA_1_4, 1/periodosAnio) - 1;
+            const TES_5_8 = Math.pow(1 + TEA_5_8, 1/periodosAnio) - 1;
+
+            // Mostrar datos calculados
+            document.getElementById('precio-display').textContent = formatNumber(precioVenta);
+            document.getElementById('cuota-display').textContent = porcentajeCuotaInicial + '%';
+            document.getElementById('prestamo-display').textContent = formatNumber(prestamo);
+            document.getElementById('frecuencia-display').textContent = frecuencia.charAt(0).toUpperCase() + frecuencia.slice(1);
+            document.getElementById('anios-display').textContent = numAnios;
+            document.getElementById('periodos-display').textContent = numPeriodos;
+
+            // Generar tabla de amortización
+            const tablaBody = document.getElementById('tablaBody');
+            tablaBody.innerHTML = '';
+
+            let saldoActual = prestamo;
+
+            for (let i = 1; i <= numPeriodos; i++) {
+                const fila = document.createElement('tr');
+                
+                // Determinar qué tasa usar
+                const esUltimoGrupo = i > 4;
+                const TEA = esUltimoGrupo ? TEA_5_8 : TEA_1_4;
+                const TES = esUltimoGrupo ? TES_5_8 : TES_1_4;
+                
+                // Aplicar estilo según el período
+                fila.className = esUltimoGrupo ? 'periodo-especial' : 'periodo-normal';
+
+                // Calcular valores para este período
+                const interes = saldoActual * TES;
+                let cuota, amortizacion;
+                
+                if (i < numPeriodos) {
+                    // Períodos normales - solo interés
+                    cuota = interes;
+                    amortizacion = 0;
+                } else {
+                    // Último período - interés + todo el capital
+                    cuota = interes + saldoActual;
+                    amortizacion = saldoActual;
+                    saldoActual = 0;
+                }
+
+                fila.innerHTML = `
+                    <td>${i}</td>
+                    <td>${(TEA * 100).toFixed(2)}%</td>
+                    <td>${(TES * 100).toFixed(7)}%</td>
+                    <td>S</td>
+                    <td>${formatNumber(i === 1 ? prestamo : prestamo)}</td>
+                    <td class="numero-rojo">(${formatNumber(interes)})</td>
+                    <td class="numero-rojo">(${formatNumber(cuota)})</td>
+                    <td>${formatNumber(amortizacion)}</td>
+                    <td>${formatNumber(i < numPeriodos ? prestamo : 0)}</td>
+                `;
+
+                tablaBody.appendChild(fila);
+            }
+
+            // Mostrar resultados
+            document.getElementById('resultados').style.display = 'block';
+        }
+
+        function formatNumber(num) {
+            return new Intl.NumberFormat('es-PE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(num);
+        }
+
+        // Calcular automáticamente al cargar la página
+        window.onload = function() {
+            calcularAmortizacion();
+        };
+    </script>
+</body>
+</html>
